@@ -444,7 +444,15 @@
         const Dev = {
             god: false,
             logged: false,
-            PASSWORD: "Lianking1237-devmode#",
+            PASSWORD_HASH: "4049ba0f866433734b285543e305c8d6a5d972ceeb8ba284763536aabe008946",
+
+            async sha256(str) {
+                const buf = new TextEncoder().encode(str);
+                const hash = await crypto.subtle.digest('SHA-256', buf);
+                return Array.from(new Uint8Array(hash))
+                    .map(b => b.toString(16).padStart(2, '0'))
+                    .join('');
+            },
 
             prompt() {
                 if (this.logged) UI.showModal('dev-panel');
@@ -456,9 +464,10 @@
                 $('dev-pass-input').value = "";
             },
 
-            check() {
+            async check() {
                 const input = $('dev-pass-input');
-                if (input.value === this.PASSWORD) {
+                const hash = await this.sha256(input.value);
+                if (hash === this.PASSWORD_HASH) {
                     this.logged = true;
                     this.close();
                     this.prompt();
