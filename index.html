@@ -6,26 +6,91 @@
     <title>Snake Universe Alpha</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { touch-action: none; background-color: #0f172a; overflow: hidden; -webkit-user-select: none; user-select: none; width: 100vw; height: 100vh; }
-        #glow-bg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140%; height: 140%; border-radius: 50%; filter: blur(80px); opacity: 0; z-index: 0; pointer-events: none; transition: background-color 0.5s, opacity 0.3s; }
-        #game-canvas { position: relative; z-index: 10; box-shadow: 0 0 40px rgba(0, 0, 0, 0.5); transition: border 0.3s, box-shadow 0.3s; cursor: pointer; }
-        .portal-mode-active { border-color: #a855f7 !important; border-width: 6px !important; box-shadow: 0 0 60px rgba(168, 85, 247, 0.5) !important; }
-        .setting-btn.active { background-color: #22c55e; color: white; border-color: #4ade80; }
+        body {
+            touch-action: none;
+            background-color: #0f172a;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #glow-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 140%;
+            height: 140%;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0;
+            z-index: 0;
+            pointer-events: none;
+            transition: background-color 0.5s, opacity 0.3s;
+        }
+
+        #game-canvas {
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            transition: border 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .portal-mode-active {
+            border-color: #a855f7 !important;
+            border-width: 6px !important;
+            box-shadow: 0 0 60px rgba(168, 85, 247, 0.5) !important;
+        }
+
+        .setting-btn.active {
+            background-color: #22c55e;
+            color: white;
+            border-color: #4ade80;
+        }
+
         .ctrl-btn { -webkit-tap-highlight-color: transparent; }
-        .ctrl-btn:active { transform: scale(0.9); background-color: #334155; }
-        
-        .bubble-effect { transform: scale(0); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .bubble-effect.show { transform: scale(1); opacity: 1; }
+        .ctrl-btn:active {
+            transform: scale(0.9);
+            background-color: #334155;
+        }
+
+        .bubble-effect {
+            transform: scale(0);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bubble-effect.show {
+            transform: scale(1);
+            opacity: 1;
+        }
 
         #start-menu::-webkit-scrollbar { display: none; }
         :fullscreen, ::backdrop { background-color: #0f172a; }
-        
-        body.pseudo-fs .ui-hide-on-fs { display: none !important; }
-        body.pseudo-fs #game-canvas { width: 95vw; height: auto; max-height: 80vh; }
 
-        input[type="color"] { -webkit-appearance: none; border: none; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; background: none; }
+        body.pseudo-fs .ui-hide-on-fs { display: none !important; }
+        body.pseudo-fs #game-canvas {
+            width: 95vw;
+            height: auto;
+            max-height: 80vh;
+        }
+
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            background: none;
+        }
         input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: 2px solid #334155; border-radius: 10px; }
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #334155;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-between min-h-screen text-white font-sans p-4 pt-12 pb-8">
@@ -54,16 +119,28 @@
     </div>
 
     <div class="w-full max-w-[500px] grid grid-cols-4 gap-2 text-center z-20 mt-4 ui-hide-on-fs">
-        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700"><p data-i18n="score" class="text-slate-400 uppercase font-bold text-[10px]">Score</p><p id="score-display" class="font-mono text-xl text-green-400">0</p></div>
-        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700"><p data-i18n="highscore" class="text-slate-400 uppercase font-bold text-[10px]">Highscore</p><p id="high-display" class="font-mono text-xl text-yellow-400">0</p></div>
-        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700"><p data-i18n="last" class="text-slate-400 uppercase font-bold text-[10px]">Last</p><p id="last-display" class="font-mono text-xl text-blue-400">0</p></div>
-        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700"><p id="status-label" data-i18n="status" class="text-slate-400 uppercase font-bold text-[10px]">Status</p><p id="status-display" class="font-mono text-xl text-slate-500">-</p></div>
+        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700">
+            <p data-i18n="score" class="text-slate-400 uppercase font-bold text-[10px]">Score</p>
+            <p id="score-display" class="font-mono text-xl text-green-400">0</p>
+        </div>
+        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700">
+            <p data-i18n="highscore" class="text-slate-400 uppercase font-bold text-[10px]">Highscore</p>
+            <p id="high-display" class="font-mono text-xl text-yellow-400">0</p>
+        </div>
+        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700">
+            <p data-i18n="last" class="text-slate-400 uppercase font-bold text-[10px]">Last</p>
+            <p id="last-display" class="font-mono text-xl text-blue-400">0</p>
+        </div>
+        <div class="bg-slate-800 p-2 rounded-lg border border-slate-700">
+            <p id="status-label" data-i18n="status" class="text-slate-400 uppercase font-bold text-[10px]">Status</p>
+            <p id="status-display" class="font-mono text-xl text-slate-500">-</p>
+        </div>
     </div>
 
     <div class="relative flex-grow flex items-center justify-center w-full my-4 z-10">
         <div class="relative">
             <canvas id="game-canvas" class="bg-slate-900 rounded-xl border-2 border-slate-700" onclick="window.focus()"></canvas>
-            
+
             <div id="start-menu" class="absolute inset-0 bg-slate-900/95 flex flex-col items-center justify-center rounded-xl z-20 p-6 overflow-y-auto">
                 <h1 class="text-3xl font-black text-green-500 mb-6 uppercase italic tracking-tighter text-center">Snake Universe</h1>
                 <div class="w-full space-y-4 max-w-[360px]">
@@ -74,16 +151,31 @@
                         <button onclick="Game.setMode('portal', this)" data-i18n="modePortal" class="setting-btn py-2.5 rounded-lg bg-slate-800 font-bold uppercase text-[10px] text-purple-400">Portal</button>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <div><p class="text-center text-[10px] text-slate-500 mb-1 uppercase font-bold" data-i18n="speedLabel">Speed</p>
-                            <div class="flex gap-1"><button onclick="Game.setSpeed(1, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">1</button><button onclick="Game.setSpeed(2, this)" class="setting-btn active px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">2</button><button onclick="Game.setSpeed(3, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">3</button></div>
+                        <div>
+                            <p class="text-center text-[10px] text-slate-500 mb-1 uppercase font-bold" data-i18n="speedLabel">Speed</p>
+                            <div class="flex gap-1">
+                                <button onclick="Game.setSpeed(1, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">1</button>
+                                <button onclick="Game.setSpeed(2, this)" class="setting-btn active px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">2</button>
+                                <button onclick="Game.setSpeed(3, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">3</button>
+                            </div>
                         </div>
-                        <div><p class="text-center text-[10px] text-slate-500 mb-1 uppercase font-bold" data-i18n="sizeLabel">Size</p>
-                            <div class="flex gap-1"><button onclick="Game.setSize(10, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">10</button><button onclick="Game.setSize(15, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">15</button><button onclick="Game.setSize(25, this)" class="setting-btn active px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">25</button></div>
+                        <div>
+                            <p class="text-center text-[10px] text-slate-500 mb-1 uppercase font-bold" data-i18n="sizeLabel">Size</p>
+                            <div class="flex gap-1">
+                                <button onclick="Game.setSize(10, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">10</button>
+                                <button onclick="Game.setSize(15, this)" class="setting-btn px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">15</button>
+                                <button onclick="Game.setSize(25, this)" class="setting-btn active px-2 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">25</button>
+                            </div>
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <div class="flex-1"><p class="text-center text-[10px] text-slate-500 mb-1 uppercase font-bold" data-i18n="foodLabel">Apples</p>
-                            <div class="flex justify-center gap-1.5"><button onclick="Game.setAppleCount(1, this)" class="setting-btn active px-3 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">1</button><button onclick="Game.setAppleCount(5, this)" class="setting-btn px-3 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">5</button><button onclick="Game.setAppleCount(10, this)" class="setting-btn px-3 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">10</button></div>
+                        <div class="flex-1">
+                            <p class="text-center text-[10px] text-slate-500 mb-1 uppercase font-bold" data-i18n="foodLabel">Apples</p>
+                            <div class="flex justify-center gap-1.5">
+                                <button onclick="Game.setAppleCount(1, this)" class="setting-btn active px-3 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">1</button>
+                                <button onclick="Game.setAppleCount(5, this)" class="setting-btn px-3 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">5</button>
+                                <button onclick="Game.setAppleCount(10, this)" class="setting-btn px-3 py-1.5 rounded-lg bg-slate-800 flex-1 font-bold text-xs">10</button>
+                            </div>
                         </div>
                         <button onclick="UI.toggleSkins()" class="bg-slate-800 border border-slate-700 px-4 py-1 rounded-lg text-[10px] font-bold uppercase hover:bg-slate-700 mt-4 h-10 shadow-lg text-slate-300">Skins</button>
                     </div>
@@ -91,9 +183,11 @@
                     <button onclick="window.open('https://linktr.ee/snakeuniverse', '_blank')" class="w-full text-slate-500 text-[10px] uppercase font-bold hover:text-slate-300">Feedback?</button>
                 </div>
             </div>
+
             <div id="loading-overlay" class="hidden absolute inset-0 bg-slate-900/90 flex flex-col items-center justify-center rounded-xl z-40 text-center">
                 <h2 data-i18n="getReady" class="text-3xl font-bold text-green-400 animate-pulse uppercase italic">Get Ready...</h2>
             </div>
+
             <div id="game-over-modal" class="hidden absolute inset-0 bg-slate-900/90 flex flex-col items-center justify-center rounded-xl z-30 p-6 text-center">
                 <h2 data-i18n="gameOver" class="text-4xl font-bold text-red-500 mb-4 uppercase italic">Game Over</h2>
                 <p id="final-score-text" class="text-2xl mb-8 font-mono text-slate-300">Score: 0</p>
@@ -103,7 +197,9 @@
     </div>
 
     <div id="mobile-controls" class="hidden w-full max-w-[280px] grid grid-cols-3 gap-2 mb-4 z-20 mx-auto text-slate-300">
-        <div></div><button onmousedown="Game.handleInput('UP')" ontouchstart="Game.handleInput('UP')" class="ctrl-btn w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center border-b-4 border-slate-950 shadow-xl"><svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg></button><div></div>
+        <div></div>
+        <button onmousedown="Game.handleInput('UP')" ontouchstart="Game.handleInput('UP')" class="ctrl-btn w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center border-b-4 border-slate-950 shadow-xl"><svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg></button>
+        <div></div>
         <button onmousedown="Game.handleInput('LEFT')" ontouchstart="Game.handleInput('LEFT')" class="ctrl-btn w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center border-b-4 border-slate-950 shadow-xl"><svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg></button>
         <button onmousedown="Game.handleInput('DOWN')" ontouchstart="Game.handleInput('DOWN')" class="ctrl-btn w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center border-b-4 border-slate-950 shadow-xl"><svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg></button>
         <button onmousedown="Game.handleInput('RIGHT')" ontouchstart="Game.handleInput('RIGHT')" class="ctrl-btn w-20 h-20 bg-slate-800 rounded-3xl flex items-center justify-center border-b-4 border-slate-950 shadow-xl"><svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -118,7 +214,8 @@
             <div class="space-y-4 text-xs sm:text-sm text-slate-300 text-left">
                 <div><b class="text-green-400">Classic:</b> <span data-i18n="infoClassic">Grow big.</span></div>
                 <div><b class="text-orange-400">Evolution:</b> <span data-i18n="infoEvolution">Speed up.</span></div>
-                <div><b class="text-blue-400">Survival:</b> <span data-i18n="infoSurvival">Blitz/Shield.</span>
+                <div>
+                    <b class="text-blue-400">Survival:</b> <span data-i18n="infoSurvival">Blitz/Shield.</span>
                     <div class="mt-2 flex gap-4 items-center">
                         <div class="flex items-center gap-1 text-red-500 font-bold">🍎 Apple</div>
                         <div class="flex items-center gap-1 text-yellow-500 font-bold">⚡ Bolt</div>
@@ -127,7 +224,7 @@
                 </div>
                 <div><b class="text-purple-400">Portal:</b> <span data-i18n="infoPortal">Walls teleport.</span></div>
             </div>
-            <button onclick="UI.toggleInfo()" class="mt-6 w-full bg-slate-700 text-white font-bold py-3 rounded-xl uppercase">Close</button>
+            <button onclick="UI.toggleInfo()" data-i18n="closeBtn" class="mt-6 w-full bg-slate-700 text-white font-bold py-3 rounded-xl uppercase">Close</button>
         </div>
     </div>
 
@@ -163,13 +260,19 @@
         </div>
     </div>
 
-    <div id="dev-panel" class="hidden absolute inset-0 bg-slate-900/98 flex flex-center items-center justify-center z-[70] p-4">
+    <div id="dev-panel" class="hidden absolute inset-0 bg-slate-900/98 flex items-center justify-center z-[70] p-4">
         <div class="bg-slate-800 border border-red-900 rounded-xl p-6 max-w-sm w-full shadow-2xl">
             <h2 class="text-xl font-bold text-red-500 mb-4 uppercase text-center tracking-widest">Dev Tools</h2>
             <div class="space-y-4">
                 <button onclick="Dev.toggleGod()" class="w-full bg-slate-900 border border-slate-700 py-3 rounded-lg text-slate-300 flex justify-between px-4 text-xs font-bold uppercase">GOD MODE: <span id="god-status" class="text-red-500">OFF</span></button>
-                <div class="flex gap-2"><input type="number" id="dev-hs-input" placeholder="New Highscore" class="flex-1 bg-slate-900 border border-slate-700 p-2 rounded text-white text-xs outline-none focus:border-red-500"><button onclick="Dev.setHighscore()" class="bg-slate-700 px-4 rounded text-[10px] font-bold">SET HS</button></div>
-                <div class="flex gap-2"><input type="number" id="dev-score-input" placeholder="Add Score" class="flex-1 bg-slate-900 border border-slate-700 p-2 rounded text-white text-xs outline-none focus:border-red-500"><button onclick="Dev.addCustomScore()" class="bg-slate-700 px-4 rounded text-[10px] font-bold">ADD</button></div>
+                <div class="flex gap-2">
+                    <input type="number" id="dev-hs-input" placeholder="New Highscore" class="flex-1 bg-slate-900 border border-slate-700 p-2 rounded text-white text-xs outline-none focus:border-red-500">
+                    <button onclick="Dev.setHighscore()" class="bg-slate-700 px-4 rounded text-[10px] font-bold">SET HS</button>
+                </div>
+                <div class="flex gap-2">
+                    <input type="number" id="dev-score-input" placeholder="Add Score" class="flex-1 bg-slate-900 border border-slate-700 p-2 rounded text-white text-xs outline-none focus:border-red-500">
+                    <button onclick="Dev.addCustomScore()" class="bg-slate-700 px-4 rounded text-[10px] font-bold">ADD</button>
+                </div>
                 <button onclick="Dev.kill()" class="w-full bg-red-900/20 border border-red-700 py-2 rounded text-red-400 text-[10px] font-bold uppercase">Kill Snake</button>
             </div>
             <button onclick="Dev.closePanel()" class="mt-6 w-full bg-slate-700 text-white py-3 rounded-lg font-bold uppercase text-xs">Close Panel</button>
@@ -178,148 +281,612 @@
 
     <script>
         const i18n = {
-            de: { score: "Score", highscore: "Highscore", last: "Letzter", status: "Status", modeClassic: "Standard", modeEvolution: "Evolution", modeSurvival: "Survival", modePortal: "Portal", startBtn: "Starten", gameOver: "Game Over", menuBtn: "Menü", getReady: "MACH DICH BEREIT...", infoTitle: "Info", closeBtn: "Schließen", infoClassic: "Sammle Äpfel und wachse.", infoEvolution: "Werde schneller.", infoSurvival: "Blitz & Schilde.", infoPortal: "Teleport durch Wände.", modeLabel: "Spielmodus", speedLabel: "Geschwindigkeit", sizeLabel: "Feld Größe", foodLabel: "Äpfel auf dem Feld" },
-            en: { score: "Score", highscore: "Highscore", last: "Last", status: "Status", modeClassic: "Classic", modeEvolution: "Evolution", modeSurvival: "Survival", modePortal: "Portal", startBtn: "Start", gameOver: "Game Over", menuBtn: "Menu", getReady: "GET READY...", infoTitle: "Info", closeBtn: "Close", infoClassic: "Grow big.", infoEvolution: "Speed up.", infoSurvival: "Bolt & Shield.", infoPortal: "Wall teleport.", modeLabel: "Game Mode", speedLabel: "Speed", sizeLabel: "Grid Size", foodLabel: "Apples on Grid" }
+            de: {
+                score: "Score", highscore: "Highscore", last: "Letzter", status: "Status",
+                lives: "Leben", portal: "Portal",
+                modeClassic: "Standard", modeEvolution: "Evolution", modeSurvival: "Survival", modePortal: "Portal",
+                startBtn: "Starten", gameOver: "Game Over", menuBtn: "Menü", getReady: "MACH DICH BEREIT...",
+                infoTitle: "Info", closeBtn: "Schließen",
+                infoClassic: "Sammle Äpfel und wachse.", infoEvolution: "Werde schneller.",
+                infoSurvival: "Blitz & Schilde.", infoPortal: "Teleport durch Wände.",
+                modeLabel: "Spielmodus", speedLabel: "Geschwindigkeit", sizeLabel: "Feld Größe", foodLabel: "Äpfel auf dem Feld"
+            },
+            en: {
+                score: "Score", highscore: "Highscore", last: "Last", status: "Status",
+                lives: "Lives", portal: "Portal",
+                modeClassic: "Classic", modeEvolution: "Evolution", modeSurvival: "Survival", modePortal: "Portal",
+                startBtn: "Start", gameOver: "Game Over", menuBtn: "Menu", getReady: "GET READY...",
+                infoTitle: "Info", closeBtn: "Close",
+                infoClassic: "Grow big.", infoEvolution: "Speed up.",
+                infoSurvival: "Bolt & Shield.", infoPortal: "Wall teleport.",
+                modeLabel: "Game Mode", speedLabel: "Speed", sizeLabel: "Grid Size", foodLabel: "Apples on Grid"
+            }
         };
 
+        const $ = (id) => document.getElementById(id);
+
         const Utils = {
-            save(key, val) { try { localStorage.setItem(key, val); } catch(e) {} },
-            load(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+            save(key, val) { try { localStorage.setItem(key, val); } catch (e) {} },
+            load(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
         };
 
         const UI = {
-            lang: 'de', mode: 'pc', isPseudoFs: false,
+            lang: 'de',
+            mode: 'pc',
+            isPseudoFs: false,
+
             init() {
-                let hash = ''; try { hash = window.location.hash.replace('#', ''); } catch(e) {}
+                let hash = '';
+                try { hash = window.location.hash.replace('#', ''); } catch (e) {}
                 const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-                if (hash === 'mobile' || hash === 'swipe' || (hash === '' && isMobile)) { this.setDevice(hash === 'swipe' ? 'swipe' : 'mobile'); } else { this.setDevice('pc'); }
+                if (hash === 'mobile' || hash === 'swipe' || (hash === '' && isMobile)) {
+                    this.setDevice(hash === 'swipe' ? 'swipe' : 'mobile');
+                } else {
+                    this.setDevice('pc');
+                }
                 this.updateStrings();
-                document.getElementById('high-display').textContent = Utils.load('snakeHigh') || 0;
+                $('high-display').textContent = Utils.load('snakeHigh') || 0;
+
                 const savedColor = Utils.load('snakeSkinColor') || '#22c55e';
                 Game.settings.skinColor = savedColor;
-                document.getElementById('skin-color-picker').value = savedColor;
-                document.getElementById('skin-hex-input').value = savedColor;
-                document.getElementById('skin-preview').style.backgroundColor = savedColor;
+                $('skin-color-picker').value = savedColor;
+                $('skin-hex-input').value = savedColor;
+                $('skin-preview').style.backgroundColor = savedColor;
             },
+
             setDevice(m) {
-                this.mode = m; try { window.location.hash = m; } catch(e) {}
-                document.getElementById('device-icon').textContent = m === 'pc' ? '💻' : (m === 'mobile' ? '📱' : '👆');
-                document.getElementById('device-btn-text').textContent = m.toUpperCase();
-                document.getElementById('mobile-controls').classList.toggle('hidden', m !== 'mobile');
-                document.getElementById('pc-hint').classList.toggle('hidden', m !== 'pc');
-                document.getElementById('swipe-hint').classList.toggle('hidden', m !== 'swipe');
+                this.mode = m;
+                try { window.location.hash = m; } catch (e) {}
+                $('device-icon').textContent = m === 'pc' ? '💻' : (m === 'mobile' ? '📱' : '👆');
+                $('device-btn-text').textContent = m.toUpperCase();
+                $('mobile-controls').classList.toggle('hidden', m !== 'mobile');
+                $('pc-hint').classList.toggle('hidden', m !== 'pc');
+                $('swipe-hint').classList.toggle('hidden', m !== 'swipe');
                 Game.resize();
             },
-            switchDevice() { const modes = ['pc', 'mobile', 'swipe']; const next = modes[(modes.indexOf(this.mode) + 1) % modes.length]; this.setDevice(next); },
-            updateStrings() { document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = i18n[this.lang][el.dataset.i18n]); Game.updateStatusUI(); },
-            toggleLanguage() { this.lang = this.lang === 'de' ? 'en' : 'de'; document.getElementById('lang-btn-text').textContent = this.lang.toUpperCase(); this.updateStrings(); },
-            toggleFullscreen() { 
+
+            switchDevice() {
+                const modes = ['pc', 'mobile', 'swipe'];
+                const next = modes[(modes.indexOf(this.mode) + 1) % modes.length];
+                this.setDevice(next);
+            },
+
+            updateStrings() {
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    el.textContent = i18n[this.lang][el.dataset.i18n];
+                });
+                Game.updateStatusUI();
+            },
+
+            toggleLanguage() {
+                this.lang = this.lang === 'de' ? 'en' : 'de';
+                $('lang-btn-text').textContent = this.lang.toUpperCase();
+                this.updateStrings();
+            },
+
+            toggleFullscreen() {
                 const doc = document.documentElement;
                 if (!document.fullscreenElement) {
-                    doc.requestFullscreen().then(() => { this.updateFsIcons(true); }).catch(() => {
-                        this.isPseudoFs = !this.isPseudoFs;
-                        document.body.classList.toggle('pseudo-fs', this.isPseudoFs);
-                        this.updateFsIcons(this.isPseudoFs);
-                    });
-                } else { document.exitFullscreen(); this.updateFsIcons(false); this.isPseudoFs = false; document.body.classList.remove('pseudo-fs'); }
-                setTimeout(() => Game.resize(), 100); 
+                    doc.requestFullscreen()
+                        .then(() => this.updateFsIcons(true))
+                        .catch(() => {
+                            this.isPseudoFs = !this.isPseudoFs;
+                            document.body.classList.toggle('pseudo-fs', this.isPseudoFs);
+                            this.updateFsIcons(this.isPseudoFs);
+                        });
+                } else {
+                    document.exitFullscreen();
+                    this.updateFsIcons(false);
+                    this.isPseudoFs = false;
+                    document.body.classList.remove('pseudo-fs');
+                }
+                setTimeout(() => Game.resize(), 100);
             },
-            updateFsIcons(active) { document.getElementById('fs-expand').classList.toggle('hidden', active); document.getElementById('fs-collapse').classList.toggle('hidden', !active); },
-            toggleInfo() { 
-                const m = document.getElementById('info-modal'); const b = document.getElementById('info-bubble');
-                if (m.classList.contains('hidden')) { m.classList.remove('hidden', 'flex'); m.classList.add('flex'); setTimeout(() => b.classList.add('show'), 10); } else { b.classList.remove('show'); setTimeout(() => m.classList.add('hidden'), 400); }
+
+            updateFsIcons(active) {
+                $('fs-expand').classList.toggle('hidden', active);
+                $('fs-collapse').classList.toggle('hidden', !active);
             },
-            toggleSkins() { document.getElementById('skins-modal').classList.toggle('hidden'); document.getElementById('skins-modal').classList.toggle('flex'); },
-            onColorInput(val) { Game.settings.skinColor = val; document.getElementById('skin-hex-input').value = val; document.getElementById('skin-preview').style.backgroundColor = val; Utils.save('snakeSkinColor', val); },
-            onHexInput(val) { if(/^#[0-9A-F]{6}$/i.test(val)) { Game.settings.skinColor = val; document.getElementById('skin-color-picker').value = val; document.getElementById('skin-preview').style.backgroundColor = val; Utils.save('snakeSkinColor', val); } },
-            showMenu() { document.getElementById('game-over-modal').classList.add('hidden'); document.getElementById('start-menu').classList.remove('hidden'); Game.active = false; }
+
+            showModal(id) {
+                const m = $(id);
+                m.classList.remove('hidden');
+                m.classList.add('flex');
+            },
+
+            hideModal(id) {
+                const m = $(id);
+                m.classList.add('hidden');
+                m.classList.remove('flex');
+            },
+
+            toggleInfo() {
+                const m = $('info-modal');
+                const b = $('info-bubble');
+                if (m.classList.contains('hidden')) {
+                    this.showModal('info-modal');
+                    setTimeout(() => b.classList.add('show'), 10);
+                } else {
+                    b.classList.remove('show');
+                    setTimeout(() => this.hideModal('info-modal'), 400);
+                }
+            },
+
+            toggleSkins() {
+                const m = $('skins-modal');
+                if (m.classList.contains('hidden')) this.showModal('skins-modal');
+                else this.hideModal('skins-modal');
+            },
+
+            onColorInput(val) {
+                Game.settings.skinColor = val;
+                $('skin-hex-input').value = val;
+                $('skin-preview').style.backgroundColor = val;
+                Utils.save('snakeSkinColor', val);
+            },
+
+            onHexInput(val) {
+                if (/^#[0-9A-F]{6}$/i.test(val)) {
+                    Game.settings.skinColor = val;
+                    $('skin-color-picker').value = val;
+                    $('skin-preview').style.backgroundColor = val;
+                    Utils.save('snakeSkinColor', val);
+                }
+            },
+
+            showMenu() {
+                $('game-over-modal').classList.add('hidden');
+                $('start-menu').classList.remove('hidden');
+                Game.active = false;
+            }
         };
 
         const Dev = {
-            god: false, logged: false,
-            prompt() { if(this.logged) { document.getElementById('dev-panel').classList.remove('hidden', 'flex'); document.getElementById('dev-panel').classList.add('flex'); } else { document.getElementById('dev-login-modal').classList.remove('hidden', 'flex'); document.getElementById('dev-login-modal').classList.add('flex'); } },
-            close() { document.getElementById('dev-login-modal').classList.add('hidden'); document.getElementById('dev-login-modal').classList.remove('flex'); document.getElementById('dev-pass-input').value = ""; },
-            check() { const input = document.getElementById('dev-pass-input'); if(input.value === "Lianking1237-devmode#") { this.logged = true; this.close(); this.prompt(); } else { input.style.borderColor = "#ef4444"; setTimeout(() => input.style.borderColor = "", 1000); } },
-            toggleGod() { this.god = !this.god; document.getElementById('god-status').textContent = this.god ? "ON" : "OFF"; },
-            setHighscore() { const v = parseInt(document.getElementById('dev-hs-input').value); if(!isNaN(v)) { Utils.save('snakeHigh', v); document.getElementById('high-display').textContent = v; } },
-            addCustomScore() { const v = parseInt(document.getElementById('dev-score-input').value); if(!isNaN(v)) { Game.score += v; document.getElementById('score-display').textContent = Game.score; Game.flash = 0.5; Game.checkFlashes(); } },
-            kill() { if(Game.active) Game.gameOver(); },
-            closePanel() { document.getElementById('dev-panel').classList.add('hidden'); document.getElementById('dev-panel').classList.remove('flex'); }
+            god: false,
+            logged: false,
+            PASSWORD: "Lianking1237-devmode#",
+
+            prompt() {
+                if (this.logged) UI.showModal('dev-panel');
+                else UI.showModal('dev-login-modal');
+            },
+
+            close() {
+                UI.hideModal('dev-login-modal');
+                $('dev-pass-input').value = "";
+            },
+
+            check() {
+                const input = $('dev-pass-input');
+                if (input.value === this.PASSWORD) {
+                    this.logged = true;
+                    this.close();
+                    this.prompt();
+                } else {
+                    input.style.borderColor = "#ef4444";
+                    setTimeout(() => input.style.borderColor = "", 1000);
+                }
+            },
+
+            toggleGod() {
+                this.god = !this.god;
+                $('god-status').textContent = this.god ? "ON" : "OFF";
+            },
+
+            setHighscore() {
+                const v = parseInt($('dev-hs-input').value);
+                if (!isNaN(v)) {
+                    Utils.save('snakeHigh', v);
+                    $('high-display').textContent = v;
+                }
+            },
+
+            addCustomScore() {
+                const v = parseInt($('dev-score-input').value);
+                if (!isNaN(v)) {
+                    Game.score += v;
+                    $('score-display').textContent = Game.score;
+                    Game.flash = 0.5;
+                    Game.checkFlashes();
+                }
+            },
+
+            kill() { if (Game.active) Game.gameOver(); },
+
+            closePanel() { UI.hideModal('dev-panel'); }
         };
 
         const Game = {
-            canvas: document.getElementById('game-canvas'), ctx: document.getElementById('game-canvas').getContext('2d'),
+            canvas: $('game-canvas'),
+            ctx: $('game-canvas').getContext('2d'),
             settings: { mode: 'classic', speed: 2, size: 25, food: 1, skinColor: '#22c55e' },
-            snake: [], items: [], score: 0, lives: 0, portalProgress: 0, portalsActive: false,
-            dx: 0, dy: 0, nextDx: 0, nextDy: 0, active: false, moveTimer: 0, speedMs: 130, lastTime: 0, flash: 0, milestoneFlash: 0, hsFlash: 0, hsBroken: false,
-            init() { window.addEventListener('resize', () => this.resize()); this.resize(); this.setupInputs(); },
+            speedMap: { 1: 200, 2: 130, 3: 80 },
+            minSpeedMs: 40,
+            portalThreshold: 5,
+
+            snake: [],
+            items: [],
+            score: 0,
+            lives: 0,
+            portalProgress: 0,
+            portalsActive: false,
+
+            dx: 0, dy: 0, nextDx: 0, nextDy: 0,
+            active: false,
+            moveTimer: 0,
+            speedMs: 130,
+            lastTime: 0,
+
+            flash: 0,
+            milestoneFlash: 0,
+            hsFlash: 0,
+            hsBroken: false,
+
+            init() {
+                window.addEventListener('resize', () => this.resize());
+                this.resize();
+                this.setupInputs();
+            },
+
             setMode(m, b) { this.settings.mode = m; this.updateBtns(b); this.updateStatusUI(); },
             setSpeed(s, b) { this.settings.speed = s; this.updateBtns(b); },
             setSize(s, b) { this.settings.size = s; this.updateBtns(b); this.resize(); },
             setAppleCount(c, b) { this.settings.food = c; this.updateBtns(b); },
-            updateBtns(b) { b.parentElement.querySelectorAll('.setting-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); },
-            resize() { const sw = window.innerWidth, sh = window.innerHeight; let sl = Math.min(sw * 0.95, sh * (UI.mode === 'pc' ? 0.75 : 0.45), 550); this.tileSize = Math.floor(sl / this.settings.size); this.canvas.width = this.canvas.height = this.tileSize * this.settings.size; },
-            startWithDelay() { document.getElementById('start-menu').classList.add('hidden'); const l = document.getElementById('loading-overlay'); l.classList.remove('hidden'); l.classList.add('flex'); setTimeout(() => { l.classList.add('hidden'); this.reset(); }, 1000); },
-            reset() { const mid = Math.floor(this.settings.size / 2); this.snake = [{x:mid, y:mid, oldX:mid, oldY:mid}]; this.items = []; this.score = 0; this.lives = 0; this.portalProgress = 0; this.dx = this.dy = this.nextDx = this.nextDy = 0; this.speedMs = {1:200, 2:130, 3:80}[this.settings.speed]; this.active = true; this.portalsActive = false; this.flash = 0; this.milestoneFlash = 0; this.hsFlash = 0; this.hsBroken = false; for(let i=0; i<this.settings.food; i++) this.spawn('apple'); document.getElementById('score-display').textContent = 0; this.updateStatusUI(); this.lastTime = performance.now(); requestAnimationFrame(t => this.loop(t)); },
-            spawn(t) { let p; while(true) { p = {x:Math.floor(Math.random()*this.settings.size), y:Math.floor(Math.random()*this.settings.size)}; if(!this.snake.some(s=>s.x===p.x&&s.y===p.y) && !this.items.some(i=>i.x===p.x&&i.y===p.y)) break; } this.items.push({...p, type:t}); },
-            handleInput(d) { if(!this.active) return; if(d==='UP'&&this.dy!==1){this.nextDx=0;this.nextDy=-1;} if(d==='DOWN'&&this.dy!==-1){this.nextDx=0;this.nextDy=1;} if(d==='LEFT'&&this.dx!==1){this.nextDx=-1;this.nextDy=0;} if(d==='RIGHT'&&this.dx!==-1){this.nextDx=1;this.nextDy=0;} },
-            setupInputs() { 
-                window.addEventListener('keydown', e => { const k=e.key.toLowerCase(); if(k==='w'||k==='arrowup')this.handleInput('UP'); if(k==='s'||k==='arrowdown')this.handleInput('DOWN'); if(k==='a'||k==='arrowleft')this.handleInput('LEFT'); if(k==='d'||k==='arrowright')this.handleInput('RIGHT'); }); 
-                let tsX, tsY;
-                window.addEventListener('touchstart', e => { tsX = e.touches[0].clientX; tsY = e.touches[0].clientY; }, {passive:true});
-                window.addEventListener('touchend', e => { if(UI.mode !== 'swipe' || !this.active) return; let dxS = e.changedTouches[0].clientX - tsX, dyS = e.changedTouches[0].clientY - tsY; if(Math.abs(dxS) > Math.abs(dyS)) { if(Math.abs(dxS) > 30) this.handleInput(dxS > 0 ? 'RIGHT' : 'LEFT'); } else { if(Math.abs(dyS) > 30) this.handleInput(dyS > 0 ? 'DOWN' : 'UP'); } }, {passive:true});
+
+            updateBtns(b) {
+                b.parentElement.querySelectorAll('.setting-btn').forEach(x => x.classList.remove('active'));
+                b.classList.add('active');
             },
-            loop(t) { if(!this.active) return; const dt = t - this.lastTime; this.lastTime = t; this.moveTimer += dt; if(this.moveTimer >= this.speedMs){this.moveTimer=0;this.update();} this.draw(this.moveTimer/this.speedMs); requestAnimationFrame(x=>this.loop(x)); },
-            checkFlashes() { if(this.score > 0 && this.score % 10 === 0) { this.milestoneFlash = 1.0; } const currentHS = parseInt(Utils.load('snakeHigh')) || 0; if(!this.hsBroken && currentHS > 0 && this.score > currentHS) { this.hsBroken = true; this.hsFlash = 1.2; } },
-            update() { 
-                this.dx=this.nextDx; this.dy=this.nextDy; if(this.dx===0&&this.dy===0){this.snake.forEach(p=>{p.oldX=p.x;p.oldY=p.y;}); return;} 
-                let h={x:this.snake[0].x+this.dx, y:this.snake[0].y+this.dy, oldX:this.snake[0].x, oldY:this.snake[0].y};
-                if(this.settings.mode==='portal'&&this.portalsActive){let tp=false; if(h.x<0){h.x=this.settings.size-1;tp=true;} else if(h.x>=this.settings.size){h.x=0;tp=true;} else if(h.y<0){h.y=this.settings.size-1;tp=true;} else if(h.y>=this.settings.size){h.y=0;tp=true;} if(tp){this.portalsActive=false;this.portalProgress=0;this.flash=1;h.oldX=h.x;h.oldY=h.y;this.updateStatusUI();}}
-                if(h.x<0||h.x>=this.settings.size||h.y<0||h.y>=this.settings.size||this.snake.some(s=>s.x===h.x&&s.y===h.y)){if(Dev.god){if(h.x<0)h.x=this.settings.size-1; if(h.x>=this.settings.size)h.x=0; if(h.y<0)h.y=this.settings.size-1; if(h.y>=this.settings.size)h.y=0; h.oldX=h.x; h.oldY=h.y;} else if(this.lives>0){this.lives--;this.nextDx=this.nextDy=0;this.flash=0.8;this.updateStatusUI();return;} else {this.gameOver();return;}}
-                this.snake.forEach(p=>{p.oldX=p.x;p.oldY=p.y;}); this.snake.unshift(h);
-                let idx=this.items.findIndex(i=>i.x===h.x&&i.y===h.y); if(idx!==-1){let itm=this.items[idx];this.items.splice(idx,1);this.score++;this.flash=0.5; this.checkFlashes(); if(itm.type==='apple'){this.spawn('apple'); if(this.settings.mode==='portal'){this.portalProgress++;if(this.portalProgress>=5)this.portalsActive=true;} if(this.settings.mode==='survival'){if(Math.random()<0.15)this.spawn('shield'); if(Math.random()<0.2)this.spawn('bolt');}} else if(itm.type==='bolt'){this.score++;this.speedMs=Math.max(40,this.speedMs-15);} else if(itm.type==='shield'){this.lives++;} document.getElementById('score-display').textContent=this.score; if(this.settings.mode==='evolution')this.speedMs=Math.max(40, {1:200,2:130,3:80}[this.settings.speed]-(this.score*3)); this.updateStatusUI();} else {this.snake.pop();}
+
+            resize() {
+                const sw = window.innerWidth, sh = window.innerHeight;
+                const sl = Math.min(sw * 0.95, sh * (UI.mode === 'pc' ? 0.75 : 0.45), 550);
+                this.tileSize = Math.floor(sl / this.settings.size);
+                this.canvas.width = this.canvas.height = this.tileSize * this.settings.size;
             },
-            updateStatusUI() { const l=i18n[UI.lang]; const d=document.getElementById('status-display'), lb=document.getElementById('status-label'); if(this.settings.mode==='survival'){lb.textContent=l.lives;d.textContent=this.lives;d.className="text-red-400 font-mono text-xl";} else if(this.settings.mode==='portal'){lb.textContent=l.portal;d.textContent=this.portalsActive?'READY':`${this.portalProgress}/5`;d.className=this.portalsActive?"text-purple-400 font-mono text-xl":"text-slate-500 font-mono text-xl";} else {lb.textContent=l.status;d.textContent="-";d.className="text-slate-500 font-mono text-xl";} },
-            draw(l) { 
-                const s=this.tileSize, g=document.getElementById('glow-bg'); this.ctx.fillStyle=(this.settings.mode==='portal'&&this.portalsActive)?'#1e0a45':'#0f172a'; this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height); let op=0; if(this.settings.mode==='portal'&&this.portalsActive){g.style.backgroundColor='#a855f7';op=0.2+(this.flash*0.4);} else if(this.lives>0){g.style.backgroundColor='#3b82f6';op=0.1+(this.flash*0.4);} else if(this.hsFlash>0){g.style.backgroundColor='#ffffff';op=this.hsFlash*0.6;} else if(this.milestoneFlash>0){g.style.backgroundColor='#fbbf24';op=this.milestoneFlash*0.4;} else {g.style.backgroundColor=this.settings.skinColor;op=this.flash*0.3;} g.style.opacity=op; if(this.flash>0)this.flash-=0.02; if(this.milestoneFlash>0)this.milestoneFlash-=0.015; if(this.hsFlash>0)this.hsFlash-=0.01; this.canvas.className=this.portalsActive?'portal-mode-active rounded-xl border-2':'rounded-xl border-2 border-slate-700'; 
-                this.items.forEach(i=>{this.ctx.beginPath(); if(i.type==='apple'){this.ctx.fillStyle='#ef4444';this.ctx.arc((i.x+0.5)*s,(i.y+0.5)*s,s/2.5,0,7);} else if(i.type==='bolt'){this.ctx.fillStyle='#eab308';this.ctx.fillRect(i.x*s+2,i.y*s+2,s-4,s-4);} else if(i.type==='shield'){this.ctx.fillStyle='#3b82f6';this.ctx.moveTo((i.x+0.5)*s,i.y*s);this.ctx.lineTo((i.x+1)*s,(i.y+0.5)*s);this.ctx.lineTo((i.x+0.5)*s,(i.y+1)*s);this.ctx.lineTo(i.x*s,(i.y+0.5)*s);} this.ctx.fill();}); 
-                this.snake.forEach((p,i)=>{let fl=isNaN(l)?0:l; let rx=p.oldX+(p.x-p.oldX)*fl, ry=p.oldY+(p.y-p.oldY)*fl; if(Math.abs(p.x-p.oldX)>1||Math.abs(p.y-p.oldY)>1){rx=p.x;ry=p.y;} 
-                let c = this.settings.skinColor; if(this.settings.mode === 'portal' && this.portalsActive) c = i===0?'#d8b4fe':'#a855f7'; else if(this.lives > 0 && i === 0) c = '#60a5fa';
-                this.ctx.fillStyle=c; this.ctx.beginPath();this.ctx.roundRect(rx*s+1,ry*s+1,s-2,s-2,i===0?6:3);this.ctx.fill();
-                if(i===0 && this.settings.skinColor.toLowerCase()==='#ffe100'){
-                    let headDx = this.dx, headDy = this.dy;
-                    if(headDx === 0 && headDy === 0) headDx = 1;
-                    const angle = Math.atan2(headDy, headDx);
-                    this.ctx.save();
-                    this.ctx.translate(rx*s+s/2, ry*s+s/2);
-                    this.ctx.rotate(angle);
-                    
-                    this.ctx.fillStyle='#ffe100';
-                    this.ctx.beginPath();
-                    this.ctx.arc(0, 0, s*0.45, 0, Math.PI*2);
-                    this.ctx.fill();
-                    
-                    this.ctx.fillStyle='#ff9900';
-                    this.ctx.beginPath();
-                    this.ctx.roundRect(s*0.1, -s*0.25, s*0.8, s*0.5, s*0.2);
-                    this.ctx.fill();
-                    
-                    this.ctx.fillStyle='black';
-                    this.ctx.beginPath();
-                    this.ctx.arc(s*0.05, -s*0.25, s*0.08, 0, Math.PI*2);
-                    this.ctx.fill();
-                    this.ctx.beginPath();
-                    this.ctx.arc(s*0.05, s*0.25, s*0.08, 0, Math.PI*2);
-                    this.ctx.fill();
-                    
-                    this.ctx.restore();
+
+            startWithDelay() {
+                $('start-menu').classList.add('hidden');
+                const l = $('loading-overlay');
+                l.classList.remove('hidden');
+                l.classList.add('flex');
+                setTimeout(() => {
+                    l.classList.add('hidden');
+                    this.reset();
+                }, 1000);
+            },
+
+            reset() {
+                const mid = Math.floor(this.settings.size / 2);
+                this.snake = [{ x: mid, y: mid, oldX: mid, oldY: mid }];
+                this.items = [];
+                this.score = 0;
+                this.lives = 0;
+                this.portalProgress = 0;
+                this.dx = this.dy = this.nextDx = this.nextDy = 0;
+                this.speedMs = this.speedMap[this.settings.speed];
+                this.active = true;
+                this.portalsActive = false;
+                this.flash = 0;
+                this.milestoneFlash = 0;
+                this.hsFlash = 0;
+                this.hsBroken = false;
+
+                for (let i = 0; i < this.settings.food; i++) this.spawn('apple');
+
+                $('score-display').textContent = 0;
+                this.updateStatusUI();
+                this.lastTime = performance.now();
+                requestAnimationFrame(t => this.loop(t));
+            },
+
+            spawn(type) {
+                let p;
+                while (true) {
+                    p = {
+                        x: Math.floor(Math.random() * this.settings.size),
+                        y: Math.floor(Math.random() * this.settings.size)
+                    };
+                    const onSnake = this.snake.some(s => s.x === p.x && s.y === p.y);
+                    const onItem = this.items.some(i => i.x === p.x && i.y === p.y);
+                    if (!onSnake && !onItem) break;
                 }
-                }); 
+                this.items.push({ ...p, type });
             },
-            gameOver() { this.active=false; const hs=parseInt(Utils.load('snakeHigh'))||0; if(this.score>hs)Utils.save('snakeHigh',this.score); document.getElementById('high-display').textContent=Utils.load('snakeHigh'); document.getElementById('last-display').textContent=this.score; document.getElementById('final-score-text').textContent="Score: "+this.score; document.getElementById('game-over-modal').classList.remove('hidden'); document.getElementById('glow-bg').style.opacity=0; }
+
+            handleInput(d) {
+                if (!this.active) return;
+                if (d === 'UP' && this.dy !== 1) { this.nextDx = 0; this.nextDy = -1; }
+                else if (d === 'DOWN' && this.dy !== -1) { this.nextDx = 0; this.nextDy = 1; }
+                else if (d === 'LEFT' && this.dx !== 1) { this.nextDx = -1; this.nextDy = 0; }
+                else if (d === 'RIGHT' && this.dx !== -1) { this.nextDx = 1; this.nextDy = 0; }
+            },
+
+            setupInputs() {
+                window.addEventListener('keydown', e => {
+                    const k = e.key.toLowerCase();
+                    if (k === 'w' || k === 'arrowup') this.handleInput('UP');
+                    else if (k === 's' || k === 'arrowdown') this.handleInput('DOWN');
+                    else if (k === 'a' || k === 'arrowleft') this.handleInput('LEFT');
+                    else if (k === 'd' || k === 'arrowright') this.handleInput('RIGHT');
+                });
+
+                let tsX, tsY;
+                window.addEventListener('touchstart', e => {
+                    tsX = e.touches[0].clientX;
+                    tsY = e.touches[0].clientY;
+                }, { passive: true });
+
+                window.addEventListener('touchend', e => {
+                    if (UI.mode !== 'swipe' || !this.active) return;
+                    const dxS = e.changedTouches[0].clientX - tsX;
+                    const dyS = e.changedTouches[0].clientY - tsY;
+                    if (Math.abs(dxS) > Math.abs(dyS)) {
+                        if (Math.abs(dxS) > 30) this.handleInput(dxS > 0 ? 'RIGHT' : 'LEFT');
+                    } else {
+                        if (Math.abs(dyS) > 30) this.handleInput(dyS > 0 ? 'DOWN' : 'UP');
+                    }
+                }, { passive: true });
+            },
+
+            loop(t) {
+                if (!this.active) return;
+                const dt = t - this.lastTime;
+                this.lastTime = t;
+                this.moveTimer += dt;
+                if (this.moveTimer >= this.speedMs) {
+                    this.moveTimer = 0;
+                    this.update();
+                }
+                this.draw(this.moveTimer / this.speedMs);
+                requestAnimationFrame(x => this.loop(x));
+            },
+
+            checkFlashes() {
+                if (this.score > 0 && this.score % 10 === 0) this.milestoneFlash = 1.0;
+                const currentHS = parseInt(Utils.load('snakeHigh')) || 0;
+                if (!this.hsBroken && currentHS > 0 && this.score > currentHS) {
+                    this.hsBroken = true;
+                    this.hsFlash = 1.2;
+                }
+            },
+
+            update() {
+                this.dx = this.nextDx;
+                this.dy = this.nextDy;
+                if (this.dx === 0 && this.dy === 0) {
+                    this.snake.forEach(p => { p.oldX = p.x; p.oldY = p.y; });
+                    return;
+                }
+
+                const size = this.settings.size;
+                const head = {
+                    x: this.snake[0].x + this.dx,
+                    y: this.snake[0].y + this.dy,
+                    oldX: this.snake[0].x,
+                    oldY: this.snake[0].y
+                };
+
+                if (this.settings.mode === 'portal' && this.portalsActive) {
+                    let teleported = false;
+                    if (head.x < 0) { head.x = size - 1; teleported = true; }
+                    else if (head.x >= size) { head.x = 0; teleported = true; }
+                    else if (head.y < 0) { head.y = size - 1; teleported = true; }
+                    else if (head.y >= size) { head.y = 0; teleported = true; }
+                    if (teleported) {
+                        this.portalsActive = false;
+                        this.portalProgress = 0;
+                        this.flash = 1;
+                        head.oldX = head.x;
+                        head.oldY = head.y;
+                        this.updateStatusUI();
+                    }
+                }
+
+                const hitWall = head.x < 0 || head.x >= size || head.y < 0 || head.y >= size;
+                const hitSelf = this.snake.some(s => s.x === head.x && s.y === head.y);
+
+                if (hitWall || hitSelf) {
+                    if (Dev.god) {
+                        if (head.x < 0) head.x = size - 1;
+                        if (head.x >= size) head.x = 0;
+                        if (head.y < 0) head.y = size - 1;
+                        if (head.y >= size) head.y = 0;
+                        head.oldX = head.x;
+                        head.oldY = head.y;
+                    } else if (this.lives > 0) {
+                        this.lives--;
+                        this.nextDx = this.nextDy = 0;
+                        this.flash = 0.8;
+                        this.updateStatusUI();
+                        return;
+                    } else {
+                        this.gameOver();
+                        return;
+                    }
+                }
+
+                this.snake.forEach(p => { p.oldX = p.x; p.oldY = p.y; });
+                this.snake.unshift(head);
+
+                const idx = this.items.findIndex(i => i.x === head.x && i.y === head.y);
+                if (idx === -1) {
+                    this.snake.pop();
+                    return;
+                }
+
+                const itm = this.items[idx];
+                this.items.splice(idx, 1);
+                this.score++;
+                this.flash = 0.5;
+                this.checkFlashes();
+
+                if (itm.type === 'apple') {
+                    this.spawn('apple');
+                    if (this.settings.mode === 'portal') {
+                        this.portalProgress++;
+                        if (this.portalProgress >= this.portalThreshold) this.portalsActive = true;
+                    }
+                    if (this.settings.mode === 'survival') {
+                        if (Math.random() < 0.15) this.spawn('shield');
+                        if (Math.random() < 0.2) this.spawn('bolt');
+                    }
+                } else if (itm.type === 'bolt') {
+                    this.score++;
+                    this.speedMs = Math.max(this.minSpeedMs, this.speedMs - 15);
+                } else if (itm.type === 'shield') {
+                    this.lives++;
+                }
+
+                $('score-display').textContent = this.score;
+                if (this.settings.mode === 'evolution') {
+                    this.speedMs = Math.max(this.minSpeedMs, this.speedMap[this.settings.speed] - (this.score * 3));
+                }
+                this.updateStatusUI();
+            },
+
+            updateStatusUI() {
+                const l = i18n[UI.lang];
+                const d = $('status-display');
+                const lb = $('status-label');
+                if (this.settings.mode === 'survival') {
+                    lb.textContent = l.lives;
+                    d.textContent = this.lives;
+                    d.className = "text-red-400 font-mono text-xl";
+                } else if (this.settings.mode === 'portal') {
+                    lb.textContent = l.portal;
+                    d.textContent = this.portalsActive ? 'READY' : `${this.portalProgress}/${this.portalThreshold}`;
+                    d.className = this.portalsActive ? "text-purple-400 font-mono text-xl" : "text-slate-500 font-mono text-xl";
+                } else {
+                    lb.textContent = l.status;
+                    d.textContent = "-";
+                    d.className = "text-slate-500 font-mono text-xl";
+                }
+            },
+
+            draw(l) {
+                const s = this.tileSize;
+                const g = $('glow-bg');
+
+                this.ctx.fillStyle = (this.settings.mode === 'portal' && this.portalsActive) ? '#1e0a45' : '#0f172a';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                let op = 0;
+                if (this.settings.mode === 'portal' && this.portalsActive) {
+                    g.style.backgroundColor = '#a855f7';
+                    op = 0.2 + (this.flash * 0.4);
+                } else if (this.lives > 0) {
+                    g.style.backgroundColor = '#3b82f6';
+                    op = 0.1 + (this.flash * 0.4);
+                } else if (this.hsFlash > 0) {
+                    g.style.backgroundColor = '#ffffff';
+                    op = this.hsFlash * 0.6;
+                } else if (this.milestoneFlash > 0) {
+                    g.style.backgroundColor = '#fbbf24';
+                    op = this.milestoneFlash * 0.4;
+                } else {
+                    g.style.backgroundColor = this.settings.skinColor;
+                    op = this.flash * 0.3;
+                }
+                g.style.opacity = op;
+
+                if (this.flash > 0) this.flash -= 0.02;
+                if (this.milestoneFlash > 0) this.milestoneFlash -= 0.015;
+                if (this.hsFlash > 0) this.hsFlash -= 0.01;
+
+                this.canvas.className = this.portalsActive
+                    ? 'portal-mode-active rounded-xl border-2'
+                    : 'rounded-xl border-2 border-slate-700';
+
+                this.items.forEach(i => {
+                    this.ctx.beginPath();
+                    if (i.type === 'apple') {
+                        this.ctx.fillStyle = '#ef4444';
+                        this.ctx.arc((i.x + 0.5) * s, (i.y + 0.5) * s, s / 2.5, 0, Math.PI * 2);
+                    } else if (i.type === 'bolt') {
+                        this.ctx.fillStyle = '#eab308';
+                        this.ctx.fillRect(i.x * s + 2, i.y * s + 2, s - 4, s - 4);
+                    } else if (i.type === 'shield') {
+                        this.ctx.fillStyle = '#3b82f6';
+                        this.ctx.moveTo((i.x + 0.5) * s, i.y * s);
+                        this.ctx.lineTo((i.x + 1) * s, (i.y + 0.5) * s);
+                        this.ctx.lineTo((i.x + 0.5) * s, (i.y + 1) * s);
+                        this.ctx.lineTo(i.x * s, (i.y + 0.5) * s);
+                    }
+                    this.ctx.fill();
+                });
+
+                this.snake.forEach((p, i) => {
+                    const fl = isNaN(l) ? 0 : l;
+                    let rx = p.oldX + (p.x - p.oldX) * fl;
+                    let ry = p.oldY + (p.y - p.oldY) * fl;
+                    if (Math.abs(p.x - p.oldX) > 1 || Math.abs(p.y - p.oldY) > 1) {
+                        rx = p.x;
+                        ry = p.y;
+                    }
+
+                    let c = this.settings.skinColor;
+                    if (this.settings.mode === 'portal' && this.portalsActive) {
+                        c = i === 0 ? '#d8b4fe' : '#a855f7';
+                    } else if (this.lives > 0 && i === 0) {
+                        c = '#60a5fa';
+                    }
+
+                    this.ctx.fillStyle = c;
+                    this.ctx.beginPath();
+                    this.ctx.roundRect(rx * s + 1, ry * s + 1, s - 2, s - 2, i === 0 ? 6 : 3);
+                    this.ctx.fill();
+
+                    if (i === 0 && this.settings.skinColor.toLowerCase() === '#ffe100') {
+                        this.drawPikachuHead(rx, ry, s);
+                    }
+                });
+            },
+
+            drawPikachuHead(rx, ry, s) {
+                let headDx = this.dx, headDy = this.dy;
+                if (headDx === 0 && headDy === 0) headDx = 1;
+                const angle = Math.atan2(headDy, headDx);
+
+                this.ctx.save();
+                this.ctx.translate(rx * s + s / 2, ry * s + s / 2);
+                this.ctx.rotate(angle);
+
+                this.ctx.fillStyle = '#ffe100';
+                this.ctx.beginPath();
+                this.ctx.arc(0, 0, s * 0.45, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                this.ctx.fillStyle = '#ff9900';
+                this.ctx.beginPath();
+                this.ctx.roundRect(s * 0.1, -s * 0.25, s * 0.8, s * 0.5, s * 0.2);
+                this.ctx.fill();
+
+                this.ctx.fillStyle = 'black';
+                this.ctx.beginPath();
+                this.ctx.arc(s * 0.05, -s * 0.25, s * 0.08, 0, Math.PI * 2);
+                this.ctx.fill();
+                this.ctx.beginPath();
+                this.ctx.arc(s * 0.05, s * 0.25, s * 0.08, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                this.ctx.restore();
+            },
+
+            gameOver() {
+                this.active = false;
+                const hs = parseInt(Utils.load('snakeHigh')) || 0;
+                if (this.score > hs) Utils.save('snakeHigh', this.score);
+                $('high-display').textContent = Utils.load('snakeHigh');
+                $('last-display').textContent = this.score;
+                $('final-score-text').textContent = "Score: " + this.score;
+                $('game-over-modal').classList.remove('hidden');
+                $('glow-bg').style.opacity = 0;
+            }
         };
 
-        UI.init(); Game.init();
+        UI.init();
+        Game.init();
     </script>
 </body>
 </html>
